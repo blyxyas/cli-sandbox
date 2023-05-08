@@ -95,6 +95,8 @@ pub trait WithStdout {
 	/// Checks that the standard output of a command is what's expected.
     fn with_stdout<S: AsRef<str>>(&self, stdout: S);
     fn with_stderr<S: AsRef<str>>(&self, stderr: S);
+	fn stdout_warns(&self) -> bool;
+	fn stderr_warns(&self) -> bool;
 }
 
 impl WithStdout for Output {
@@ -115,6 +117,50 @@ impl WithStdout for Output {
         });
         assert_eq!(buf, stderr.as_ref());
     }
+
+	/// Returns how many times the program contains the word "warning:" in the `stderr`. Useful for checking compile-time warnings.
+	/// 
+	/// ## Example
+	/// 
+	/// ```
+	/// # fn main() -> Result<(), Box<dyn Error>> {
+	/// let cmd = project()?;
+	/// if cmd.stderr_warns() {
+	/// 	// Maybe there's something to check with that code...
+	/// }
+	/// # Ok(())
+	/// }
+	/// ```
+	fn stdout_warns(&self) -> bool {
+		let mut buf = String::new();
+		buf.push_str(match str::from_utf8(&self.stdout) {
+			Ok(val) => val,
+			Err(_) => panic!("stdout isn't UTF-8 (bug)"),
+		});
+		buf.contains("warnings:")
+	}
+
+	/// Returns how many times the program contains the word "warning:" in the `stderr`. Useful for checking compile-time warnings.
+	/// 
+	/// ## Example
+	/// 
+	/// ```
+	/// # fn main() -> Result<(), Box<dyn Error>> {
+	/// let cmd = project()?;
+	/// if cmd.stderr_warns() {
+	/// 	// Maybe there's something to check with that code...
+	/// }
+	/// # Ok(())
+	/// }
+	/// ```
+	fn stderr_warns(&self) -> bool {
+		let mut buf = String::new();
+        buf.push_str(match str::from_utf8(&self.stderr) {
+            Ok(val) => val,
+            Err(_) => panic!("stderr isn't UTF-8 (bug)"),
+        });
+		buf.contains("warnings:")
+	}
 }
 
 pub const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
