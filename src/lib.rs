@@ -43,7 +43,7 @@ impl Project {
     ///
     /// `path` gets redirected to the project's real path (temporary and unknown).
     pub fn new_file<P: AsRef<Path>>(&mut self, path: P, contents: &str) -> Result<()> {
-        write(&self.path().join(path), contents)?;
+        write(self.path().join(path), contents)?;
         Ok(())
     }
 
@@ -75,7 +75,7 @@ impl Project {
                 .join("debug")
                 .join(env!("CARGO_PKG_NAME")),
         )
-        .current_dir(&self.path())
+        .current_dir(self.path())
         .args(args)
         .output()?);
 
@@ -117,4 +117,4 @@ impl WithStdout for Output {
     }
 }
 
-pub const MANIFEST_DIR: &'static str = env!("CARGO_MANIFEST_DIR");
+pub const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
