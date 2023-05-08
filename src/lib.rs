@@ -69,7 +69,7 @@ impl Project {
         I: IntoIterator<Item = S>,
         S: AsRef<OsStr>,
     {
-        #[cfg(all(feature = "dev", not(feature = "release")))]
+        #[cfg(feature = "dev")]
         return Ok(Command::new(
             Path::new(&std::env::var("CARGO_TARGET_DIR")?)
                 .join("debug")
@@ -79,7 +79,7 @@ impl Project {
         .args(args)
         .output()?);
 
-        #[cfg(all(feature = "release", not(feature = "dev")))]
+        #[cfg(feature = "release")]
         return Ok(Command::new(
             Path::new(&std::env::var("CARGO_TARGET_DIR")?)
                 .join("release")
@@ -88,12 +88,6 @@ impl Project {
         .current_dir(&self.path())
         .args(args)
         .output()?);
-
-        #[cfg(all(feature = "dev", feature = "release"))]
-		#[rustfmt::skip]
-        compile_error!("You cannot have both `dev` and `release` features enabled at the same time.");
-        #[cfg(all(not(feature = "dev"), not(feature = "release")))]
-		compile_error!("You must enable either `dev` or `release` to use this crate. (Not at the same time, `dev` is recommended)")
     }
 }
 

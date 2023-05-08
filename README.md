@@ -6,7 +6,6 @@
 
 * Pretty assertions, powered by [`pretty_assertions`](https://docs.rs/pretty_assertions/latest/pretty_assertions/). (*optional*)
 * Testing for either channel, `dev` or `release`.
-* 
 
 ## Why?
 
