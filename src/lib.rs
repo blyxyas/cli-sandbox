@@ -124,7 +124,7 @@ pub trait WithStdout {
     /// If the `regex` feature is enabled, you could write the expected output as a regex (being more flexible)
     ///
     /// ## Example
-    /// ```rust, ignore
+    /// ```no_run
     /// # use crate::cli_sandbox::WithStdout;
     /// # use std::error::Error;
     /// # use cli_sandbox::project;
@@ -141,7 +141,7 @@ pub trait WithStdout {
     /// If the `regex` feature is enabled, you could write the expected output as a regex (being more flexible)
     ///
     /// ## Example
-    /// ```rust, ignore
+    /// ```no_run
     /// # use std::error::Error;
     /// # use cli_sandbox::{project, WithStdout};
     /// # fn main() -> Result<(), Box<dyn Error>>{
@@ -156,7 +156,7 @@ pub trait WithStdout {
     ///
     /// ## Example
     ///
-    /// ```rust, ignore
+    /// ```no_run
     /// # use std::error::Error;
     /// # use cli_sandbox::{project, WithStdout};
     /// # fn main() -> Result<(), Box<dyn Error>> {
@@ -173,7 +173,7 @@ pub trait WithStdout {
     ///
     /// ## Example
     ///
-    /// ```rust, ignore
+    /// ```no_run
     /// # use std::error::Error;
     /// # use cli_sandbox::{project, WithStdout};
     /// # fn main() -> Result<(), Box<dyn Error>> {
