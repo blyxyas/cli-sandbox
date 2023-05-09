@@ -1,4 +1,4 @@
-use std::{path::PathBuf, io::stdout};
+use std::path::PathBuf;
 
 use git_cliff as cliff;
 
