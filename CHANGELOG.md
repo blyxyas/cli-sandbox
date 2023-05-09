@@ -2,22 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.1.0] - 2023-05-09
 
 ### Bug Fixes
 
-- Add Clippy + Make it happy
 - Relay feature checking to `build.rs`, instead of the individual functions.
+- Add Clippy + Make it happy
 
 ### Features
 
-- Add Regex support
-- Add `stdout_warns` and `stderr_warns` functions
 - Initial Commit
+- Add `stdout_warns` and `stderr_warns` functions
+- Add Regex support
+- Setup Changelog
 
 ### Ci
 
 - Setup `deny-warnings` and CI
+- Now the workflows actually run
 
 ### Misc
 
