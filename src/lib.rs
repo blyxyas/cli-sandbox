@@ -1,5 +1,28 @@
 // All code blocks in fragments must be ignored because rustdoc hates environment variables, it seems.
 
+#![cfg_attr(feature = "deny-warnings", deny(warning))] // Use for tests
+#![warn(
+    unused,
+    clippy::dbg_macro,
+    clippy::decimal_literal_representation,
+    clippy::undocumented_unsafe_blocks,
+    clippy::empty_structs_with_brackets,
+    clippy::format_push_string,
+    clippy::get_unwrap,
+    clippy::if_then_some_else_none,
+    clippy::impl_trait_in_params,
+    clippy::integer_division,
+    clippy::large_include_file,
+    clippy::let_underscore_must_use,
+    clippy::missing_assert_message,
+    clippy::semicolon_outside_block,
+    clippy::str_to_string,
+    clippy::todo,
+    clippy::unimplemented,
+    clippy::unneeded_field_pattern,
+    clippy::use_debug
+)]
+
 use std::{
     env,
     ffi::OsStr,
@@ -10,11 +33,11 @@ use std::{
     str,
 };
 
-#[cfg(feature = "regex")]
-use regex::Regex;
 use anyhow::Result;
 #[cfg(feature = "pretty_assertions")]
 use pretty_assertions::assert_eq;
+#[cfg(feature = "regex")]
+use regex::Regex;
 #[cfg(feature = "unstable")]
 use stability::unstable;
 use tempfile::{tempdir, TempDir};
@@ -96,77 +119,77 @@ impl Project {
 }
 
 pub trait WithStdout {
-	/// Checks that the standard output of a command is what's expected. If they aren't the same, it will show the differences if the `pretty_asssertions` feature is enabled
-	/// 
-	/// If the `regex` feature is enabled, you could write the expected output as a regex (being more flexible)
-	/// 
-	/// ## Example
-	/// ```rust, ignore
-	/// # use crate::cli_sandbox::WithStdout;
-	/// # use std::error::Error;
-	/// # use cli_sandbox::project;
-	/// # fn main() -> Result<(), Box<dyn Error>>{
-	/// let proj = project()?;
-	/// let cmd = proj.command(["my", "cool", "--args"])?;
-	/// cmd.with_stdout("Expected stdout");
-	/// # Ok(())
-	/// # }
-	/// ```
-	fn with_stdout<S: AsRef<str>>(&self, stdout: S);
-	/// Checks that the standard output of a command is what's expected. If they aren't the same, it will show the differences if the `pretty_asssertions` feature is enabled
-	/// 
-	/// If the `regex` feature is enabled, you could write the expected output as a regex (being more flexible)
-	/// 
-	/// ## Example
-	/// ```rust, ignore
-	/// # use std::error::Error;
-	/// # use cli_sandbox::{project, WithStdout};
-	/// # fn main() -> Result<(), Box<dyn Error>>{
-	/// let proj = project()?;
-	/// let cmd = proj.command(["my", "cool", "--args"])?;
-	/// cmd.with_stderr("Expected stdout");
-	/// # Ok(())
-	/// # }
-	/// ```
+    /// Checks that the standard output of a command is what's expected. If they aren't the same, it will show the differences if the `pretty_asssertions` feature is enabled
+    ///
+    /// If the `regex` feature is enabled, you could write the expected output as a regex (being more flexible)
+    ///
+    /// ## Example
+    /// ```rust, ignore
+    /// # use crate::cli_sandbox::WithStdout;
+    /// # use std::error::Error;
+    /// # use cli_sandbox::project;
+    /// # fn main() -> Result<(), Box<dyn Error>>{
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// cmd.with_stdout("Expected stdout");
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn with_stdout<S: AsRef<str>>(&self, stdout: S);
+    /// Checks that the standard output of a command is what's expected. If they aren't the same, it will show the differences if the `pretty_asssertions` feature is enabled
+    ///
+    /// If the `regex` feature is enabled, you could write the expected output as a regex (being more flexible)
+    ///
+    /// ## Example
+    /// ```rust, ignore
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>>{
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// cmd.with_stderr("Expected stdout");
+    /// # Ok(())
+    /// # }
+    /// ```
     fn with_stderr<S: AsRef<str>>(&self, stderr: S);
-		/// Returns how many times the program contains the word "warning:" in the `stderr`. Useful for checking compile-time warnings.
-	/// 
-	/// ## Example
-	/// 
-	/// ```rust, ignore
-	/// # use std::error::Error;
-	/// # use cli_sandbox::{project, WithStdout};
-	/// # fn main() -> Result<(), Box<dyn Error>> {
-	/// let proj = project()?;
-	/// let cmd = proj.command(["my", "cool", "--args"])?;
-	/// if cmd.stderr_warns() {
-	/// 	// Maybe there's something to check with that code...
-	/// }
-	/// # Ok(())
-	/// }
-	/// ```
-	fn stdout_warns(&self) -> bool;
-	/// Returns how many times the program contains the word "warning:" in the `stderr`. Useful for checking compile-time warnings.
-	/// 
-	/// ## Example
-	/// 
-	/// ```rust, ignore
-	///	# use std::error::Error;
-	/// # use cli_sandbox::{project, WithStdout};
-	/// # fn main() -> Result<(), Box<dyn Error>> {
-	/// let proj = project()?;
-	/// let cmd = proj.command(["my", "cool", "--args"])?;
-	/// if cmd.stderr_warns() {
-	/// 	// Maybe there's something to check with that code...
-	/// }
-	/// # Ok(())
-	/// }
-	/// ```
-	fn stderr_warns(&self) -> bool;
+    /// Returns how many times the program contains the word "warning:" in the `stderr`. Useful for checking compile-time warnings.
+    ///
+    /// ## Example
+    ///
+    /// ```rust, ignore
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>> {
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// if cmd.stderr_warns() {
+    ///     // Maybe there's something to check with that code...
+    /// }
+    /// # Ok(())
+    /// }
+    /// ```
+    fn stdout_warns(&self) -> bool;
+    /// Returns how many times the program contains the word "warning:" in the `stderr`. Useful for checking compile-time warnings.
+    ///
+    /// ## Example
+    ///
+    /// ```rust, ignore
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>> {
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// if cmd.stderr_warns() {
+    ///     // Maybe there's something to check with that code...
+    /// }
+    /// # Ok(())
+    /// }
+    /// ```
+    fn stderr_warns(&self) -> bool;
 }
 
 impl WithStdout for Output {
-	#[cfg(not(feature = "regex"))]
+    #[cfg(not(feature = "regex"))]
     fn with_stdout<S: AsRef<str>>(&self, stdout: S) {
         let mut buf = String::new();
         buf.push_str(match str::from_utf8(&self.stdout) {
@@ -176,7 +199,7 @@ impl WithStdout for Output {
         assert_eq!(buf, stdout.as_ref());
     }
 
-	#[cfg(not(feature = "regex"))]
+    #[cfg(not(feature = "regex"))]
     fn with_stderr<S: AsRef<str>>(&self, stderr: S) {
         let mut buf = String::new();
         buf.push_str(match str::from_utf8(&self.stderr) {
@@ -186,59 +209,59 @@ impl WithStdout for Output {
         assert_eq!(buf, stderr.as_ref());
     }
 
-	#[cfg(feature = "regex")]
-	fn with_stderr<S: AsRef<str>>(&self, regex: S) {
-		let re = match Regex::new(regex.as_ref()) {
-			Ok(re) => re,
-			Err(e) => panic!("Regex {} isn't valid: {e}", regex.as_ref()),
-		};
+    #[cfg(feature = "regex")]
+    fn with_stderr<S: AsRef<str>>(&self, regex: S) {
+        let re = match Regex::new(regex.as_ref()) {
+            Ok(re) => re,
+            Err(e) => panic!("Regex {} isn't valid: {e}", regex.as_ref()),
+        };
 
-		let mut buf = String::new();
+        let mut buf = String::new();
         buf.push_str(match str::from_utf8(&self.stderr) {
             Ok(val) => val,
             Err(_) => panic!("stderr isn't UTF-8 (bug)"),
         });
 
-		if !re.is_match(&buf) {	
-			assert_eq!(buf, regex.as_ref()); // Show differences
-		};
-	}
+        if !re.is_match(&buf) {
+            assert_eq!(buf, regex.as_ref()); // Show differences
+        };
+    }
 
-	#[cfg(feature = "regex")]
-	fn with_stdout<S: AsRef<str>>(&self, regex: S) {
-		let re = match Regex::new(regex.as_ref()) {
-			Ok(re) => re,
-			Err(e) => panic!("Regex {} isn't valid: {e}", regex.as_ref()),
-		};
+    #[cfg(feature = "regex")]
+    fn with_stdout<S: AsRef<str>>(&self, regex: S) {
+        let re = match Regex::new(regex.as_ref()) {
+            Ok(re) => re,
+            Err(e) => panic!("Regex {} isn't valid: {e}", regex.as_ref()),
+        };
 
-		let mut buf = String::new();
+        let mut buf = String::new();
         buf.push_str(match str::from_utf8(&self.stdout) {
             Ok(val) => val,
             Err(_) => panic!("stdout isn't UTF-8 (bug)"),
         });
 
-		if !re.is_match(&buf) {	
-			assert_eq!(buf, regex.as_ref()); // Show differences
-		};
-	}
+        if !re.is_match(&buf) {
+            assert_eq!(buf, regex.as_ref()); // Show differences
+        };
+    }
 
-	fn stdout_warns(&self) -> bool {
-		let mut buf = String::new();
-		buf.push_str(match str::from_utf8(&self.stdout) {
-			Ok(val) => val,
-			Err(_) => panic!("stdout isn't UTF-8 (bug)"),
-		});
-		buf.contains("warnings:")
-	}
+    fn stdout_warns(&self) -> bool {
+        let mut buf = String::new();
+        buf.push_str(match str::from_utf8(&self.stdout) {
+            Ok(val) => val,
+            Err(_) => panic!("stdout isn't UTF-8 (bug)"),
+        });
+        buf.contains("warnings:")
+    }
 
-	fn stderr_warns(&self) -> bool {
-		let mut buf = String::new();
+    fn stderr_warns(&self) -> bool {
+        let mut buf = String::new();
         buf.push_str(match str::from_utf8(&self.stderr) {
             Ok(val) => val,
             Err(_) => panic!("stderr isn't UTF-8 (bug)"),
         });
-		buf.contains("warnings:")
-	}
+        buf.contains("warnings:")
+    }
 }
 
 pub const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
