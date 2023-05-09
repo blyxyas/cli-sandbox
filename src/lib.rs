@@ -1,6 +1,6 @@
 // All code blocks in fragments must be ignored because rustdoc hates environment variables, it seems.
 
-#![cfg_attr(feature = "deny-warnings", deny(warning))] // Use for tests
+#![cfg_attr(feature = "deny-warnings", deny(warnings))] // Use for tests
 #![warn(
     unused,
     clippy::dbg_macro,
@@ -69,9 +69,9 @@ impl Project {
     /// Creates a new file with a relative path to the project's directory.
     ///
     /// `path` gets redirected to the project's real path (temporary and unknown).
+    #[inline]
     pub fn new_file<P: AsRef<Path>>(&mut self, path: P, contents: &str) -> Result<()> {
-        write(self.path().join(path), contents)?;
-        Ok(())
+        Ok(write(self.path().join(path), contents)?)
     }
 
     /// Checks that the contents of a file are correct. It will panic if they aren't, and show the differences if the feature **`pretty_assertions`** is enabled
