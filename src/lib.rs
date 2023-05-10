@@ -14,13 +14,36 @@
     clippy::integer_division,
     clippy::large_include_file,
     clippy::let_underscore_must_use,
-    clippy::missing_assert_message,
     clippy::semicolon_outside_block,
     clippy::str_to_string,
     clippy::todo,
     clippy::unimplemented,
     clippy::unneeded_field_pattern,
-    clippy::use_debug
+    clippy::use_debug,
+	clippy::branches_sharing_code,
+	clippy::cast_possible_wrap,
+	clippy::doc_markdown,
+	clippy::empty_enum,
+	clippy::if_not_else,
+	clippy::inefficient_to_string,
+	clippy::items_after_statements,
+	clippy::large_digit_groups,
+	clippy::large_types_passed_by_value,
+	clippy::match_same_arms,
+	clippy::missing_const_for_fn,
+	clippy::missing_panics_doc,
+	clippy::needless_bitwise_bool,
+	clippy::needless_collect,
+	clippy::needless_pass_by_value,
+	clippy::no_effect_underscore_binding,
+	clippy::nonstandard_macro_braces,
+	clippy::or_fun_call,
+	clippy::range_plus_one,
+	clippy::range_minus_one,
+	clippy::similar_names,
+	clippy::suboptimal_flops,
+	clippy::too_many_lines,
+	clippy::unused_self
 )]
 
 use std::{
@@ -55,6 +78,7 @@ pub fn project() -> Result<Project> {
 
 impl Project {
     /// Creates a new [`Project`]
+	/// 
     pub fn new() -> Result<Self> {
         Ok(Self {
             tempdir: tempdir()?,
@@ -77,6 +101,8 @@ impl Project {
     /// Checks that the contents of a file are correct. It will panic if they aren't, and show the differences if the feature **`pretty_assertions`** is enabled
     ///
     /// `path` gets redirected to the project's real path (temporary and unknown)
+	/// # Panics
+	/// Will panic if the contents of the file at path aren't encoded as UTF-8
     pub fn check_file<P: AsRef<Path>>(&self, path: P, contents: &str) -> Result<()> {
         let mut f = File::open(self.path().join(path))?;
         let mut buf = Vec::new();
