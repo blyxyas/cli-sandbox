@@ -162,9 +162,7 @@ pub trait WithStdout {
     /// # }
     /// ```
     fn with_stdout<S: AsRef<str>>(&self, stdout: S);
-    /// Checks that the standard output of a command is what's expected. If they aren't the same, it will show the differences if the `pretty_asssertions` feature is enabled
-    ///
-    /// If the `regex` feature is enabled, you could write the expected output as a regex (being more flexible)
+    /// Checks that the standard error of a command is what's expected. If they aren't the same, it will show the differences if the `pretty_asssertions` feature is enabled
     ///
     /// ## Example
     /// ```no_run
@@ -173,11 +171,39 @@ pub trait WithStdout {
     /// # fn main() -> Result<(), Box<dyn Error>>{
     /// let proj = project()?;
     /// let cmd = proj.command(["my", "cool", "--args"])?;
-    /// cmd.with_stderr("Expected stdout");
+    /// cmd.with_stderr("Expected stderr");
     /// # Ok(())
     /// # }
     /// ```
     fn with_stderr<S: AsRef<str>>(&self, stderr: S);
+	/// Checks that the standard output of a command is what's expected (Using regex). If they aren't the same, it will show the differences if the `pretty_asssertions` feature is enabled
+	/// 
+	/// ## Example
+    /// ```no_run
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>>{
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// cmd.with_stdout_regex("<Regex that matches expected stdout>");
+    /// # Ok(())
+    /// # }
+    /// ```
+	fn with_stdout_regex<S: AsRef<str>>(&self, stdout: S);
+	/// Checks that the standard error of a command is what's expected (Using regex). If they aren't the same, it will show the differences if the `pretty_asssertions` feature is enabled
+	/// 
+	/// ## Example
+    /// ```no_run
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>>{
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// cmd.with_stderr("<Regex that matches expected stderr>");
+    /// # Ok(())
+    /// # }
+    /// ```
+	fn with_stderr_regex<S: AsRef<str>>(&self, stderr: S);
     /// Returns how many times the program contains the word "warning:" in the `stderr`. Useful for checking compile-time warnings.
     ///
     /// ## Example
@@ -215,7 +241,6 @@ pub trait WithStdout {
 }
 
 impl WithStdout for Output {
-    #[cfg(not(feature = "regex"))]
     fn with_stdout<S: AsRef<str>>(&self, stdout: S) {
         let mut buf = String::new();
         buf.push_str(match str::from_utf8(&self.stdout) {
@@ -225,7 +250,6 @@ impl WithStdout for Output {
         assert_eq!(buf, stdout.as_ref());
     }
 
-    #[cfg(not(feature = "regex"))]
     fn with_stderr<S: AsRef<str>>(&self, stderr: S) {
         let mut buf = String::new();
         buf.push_str(match str::from_utf8(&self.stderr) {
@@ -236,7 +260,7 @@ impl WithStdout for Output {
     }
 
     #[cfg(feature = "regex")]
-    fn with_stderr<S: AsRef<str>>(&self, regex: S) {
+    fn with_stderr_regex<S: AsRef<str>>(&self, regex: S) {
         let re = match Regex::new(regex.as_ref()) {
             Ok(re) => re,
             Err(e) => panic!("Regex {} isn't valid: {e}", regex.as_ref()),
@@ -254,7 +278,7 @@ impl WithStdout for Output {
     }
 
     #[cfg(feature = "regex")]
-    fn with_stdout<S: AsRef<str>>(&self, regex: S) {
+    fn with_stdout_regex<S: AsRef<str>>(&self, regex: S) {
         let re = match Regex::new(regex.as_ref()) {
             Ok(re) => re,
             Err(e) => panic!("Regex {} isn't valid: {e}", regex.as_ref()),
