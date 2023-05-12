@@ -72,6 +72,10 @@ Check the [project's documentation](https://docs.rs/cli-sandbox) for more info.
 * Little fuzzing functionality (feature: `fuzz`)
 * Testing either the `debug` or `release` profile (features: `dev` or `release`)
 
+## Contributing
+
+Check the [`CONTRIBUTING.md`] file for some guidelines on how to contribute. **All contributions are welcomed, any size from contributors with all levels of experience!**
+
 ## LICENSE
 
 we use the **MIT License**, check the [LICENSE] file for more information
