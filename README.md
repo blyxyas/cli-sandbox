@@ -71,3 +71,7 @@ Check the [project's documentation](https://docs.rs/cli-sandbox) for more info.
 * All output is beautiful thanks to [`pretty-assertions`](https://docs.rs/pretty_assertions/latest/pretty_assertions/) and [`better_panic`](https://docs.rs/better_panic). (feature: `pretty`, also can be enabled individually)
 * Little fuzzing functionality (feature: `fuzz`)
 * Testing either the `debug` or `release` profile (features: `dev` or `release`)
+
+## LICENSE
+
+we use the **MIT License**, check the [LICENSE] file for more information
