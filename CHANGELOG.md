@@ -2,11 +2,64 @@
 
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [0.4.4] - 2023-05-12
+
+### Documentation
+
+- Sync Crate's root docs to `README.md`
+
+### Miscellaneous Tasks
+
+- Add `include` key in `Cargo.toml`
+
+## [0.4.3] - 2023-05-12
+
+### Miscellaneous Tasks
+
+- Prepare for publishing
+
+## [0.4.2] - 2023-05-12
+
+### Bug Fixes
+
+- Remove unused `unstable` feature
+- Add License (MIT)
+
+### Documentation
+
+- Improve README
+- Add LICENSE to `README.md`
+- Add a contribution guide
+
+### Miscellaneous Tasks
+
+- Make Clippy byt changing a to-zero comparison
+
+### Testing
+
+- Remove a unused warning
+- Add `project.rs` test.
+
+## [0.4.0] - 2023-05-12
+
+### Features
+
+- Add `empty_stderr` and `empty_stdout` to `WithStdout`
+
+### Testing
+
+- Now versions are checked (desc.)
+- Now the `fmt` test uses `empty_stdout` instead of `with_stdout("")`
+
+## [0.3.0] - 2023-05-12
 
 ### Bug Fixes
 
 - Separate regex and `with_stdout` and `with_stderr`
+
+### Features
+
+- Add `fuzz` and `fuzz_seed`
 
 ### Testing
 
