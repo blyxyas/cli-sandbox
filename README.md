@@ -1,26 +1,73 @@
-# `cli-sandbox`
+<span align="center">
+
+<h1><pre><code>cli-sandbox</code></pre></h1>
+
+<a href="https://crates.io/crates/cli-sandbox"><img src="https://img.shields.io/crates/d/cli-sandbox?style=for-the-badge&logo=rust"></img></a>
+<a href="https://docs.rs/cli-sandbox"><img src="https://img.shields.io/docsrs/cli-sandbox?style=for-the-badge&logo=docsdotrs"></img></a>
+
+</span>
 
 `cli-sandbox` is a sandboxing environment and testing utility to help you test and debug your CLI applications, inspired by [Cargo's `cargo-test-support`](https://github.com/rust-lang/cargo/tree/master/crates/cargo-test-support).
 
-## Features
+All tests get their own temporary directories, where you can create files, check files, test your program against those files and check the output of your program in various ways.
 
-* Pretty assertions, powered by [`pretty_assertions`](https://docs.rs/pretty_assertions/latest/pretty_assertions/). (*optional*)
-* Testing for either channel, `dev` or `release`.
+For example, if you want to check that your Python to Rust transpiler works correctly:
 
-## Why?
+```rust
+use cli_sandbox::{project, WithStdout};
+use std::error::Error;
 
-The best way to test an application is by simulating a user's environment. `cli-sandbox` creates a temporary directory for each test, and redirects and IO into that designated directory.
-
-Checking a tool `init` command is as simple as this:
-
-```rs
 #[test]
-fn init_doc() -> Result<()> {
-    let proj = Project::new()?;
-	let cmd = proj.command(["init"])?;
-	cmd.with_stderr(""); // There shouldn't be any errors
-	cmd.with_stdout("The project was initialized! :D");
-proj.check_file(Path::new("<The path where a file was generated>"), r#"WHAT SHOULD APPEAR IN THE FILE"#)?;
-	Ok(())
+fn compiling() -> Result<(), Box<dyn Error>> {
+	let proj = project()?;                      // Create a project
+
+	// Let's create a file, and put in there some Python.
+	proj.new_file("my-program.py",
+r#"def main():
+	print("Hi! this is a test")
+
+main()"#)?;
+
+	let cmd = proj.command(["build"])?;         // Execute the command "<YOUR COMMAND> build". Cli-sandbox will automatically get pickup your command.
+
+	// Now, let's check that the transpiler created the file correctly.
+	proj.check_file("my-program.rs", 
+r#"fn main() {
+	println!("Hi! this is a test");
+}
+
+main()"#)?;
+
+	// And that the command stdout and stderr are correct.
+
+	cmd.with_stdout("File transpiled correctly! (`my-program.py` -> `my-program.rs`)");
+
+	// If the stderr isn't empty, we'll panic.
+	if !cmd.empty_stderr() {
+		panic!("Something went wrong! stderr isn't empty");
+	};
 }
 ```
+
+You can also get the path of a project (it changes each time the tests are executed, they're temporary).
+
+## Installation
+
+```sh
+cargo add cli-sandbox
+```
+
+## Usage
+
+The first step is to create a `Project`. You can use either `Project::new()` or `project()`. This will create a temporary directory for you to put all your testing files in there.
+
+From a project, you can execute commands, do I/O operations or even operate over it manually by getting the project's path (`Project::path()`).
+
+Check the [project's documentation](https://docs.rs/cli-sandbox) for more info.
+
+## Features
+
+* Regex support for checking `stdout` and `stderr`. (feature: `regex`)
+* All output is beautiful thanks to [`pretty-assertions`](https://docs.rs/pretty_assertions/latest/pretty_assertions/) and [`better_panic`](https://docs.rs/better_panic). (feature: `pretty`, also can be enabled individually)
+* Little fuzzing functionality (feature: `fuzz`)
+* Testing either the `debug` or `release` profile (features: `dev` or `release`)
