@@ -314,4 +314,73 @@ impl WithStdout for Output {
     }
 }
 
+#[cfg(feature = "fuzz")]
+/// Generates a random string of text, meant to be used a mini-fuzz test. (As input to your CLI.)
+///
+/// ## Example
+///
+/// ```no_run
+/// # use cli_sandbox::{project, fuzz, WithStdout};
+/// # use std::error::Error;
+/// # fn main() -> Result<(), Box<dyn Error>> {
+/// let proj = project()?;
+/// let cmd = proj.command(["name", &fuzz(10)])?; // Use a random string of length 10
+/// cmd.with_stdout("...");
+/// # Ok(())
+/// # }
+/// ```
+pub fn fuzz(length: usize) -> String {
+    let charset = if let Ok(charset) = env::var("CARGO_CFG_FUZZ_CHARSET") {
+        charset
+    } else {
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".into()
+    };
+
+    let chars = charset.chars().collect::<Vec<char>>();
+
+    let mut buf = String::new();
+    for _ in 0..=length {
+        buf.push(chars[fastrand::usize(..charset.len())]);
+    }
+
+    buf
+}
+
+#[cfg(feature = "fuzz_seed")]
+/// Generates a random string of text, meant to be used a mini-fuzz test. (As input to your CLI.) It's different from [`fuzz`] because this function also takes a seed, meaining that it will output easily determinitable results.
+///
+/// ## Example
+///
+/// ```no_run
+/// # use cli_sandbox::{project, fuzz_seed, WithStdout};
+/// # use std::error::Error;
+/// # fn main() -> Result<(), Box<dyn Error>> {
+/// let proj = project()?;
+/// let cmd = proj.command(["name", &fuzz_seed(5, 10)])?; // Use a random string of length 10
+/// cmd.with_stdout("...");
+/// # Ok(())
+/// # }
+/// ```
+pub fn fuzz_seed(length: usize, seed: u64) -> String {
+    fastrand::seed(seed);
+    let charset = if let Ok(charset) = env::var("CARGO_CFG_FUZZ_CHARSET") {
+        charset
+    } else {
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".into()
+    };
+
+    let mut chars = charset.chars();
+
+    let mut buf = String::new();
+    for _ in 0..=length {
+        buf.push(
+            chars
+                .nth(fastrand::u8(..charset.len() as u8).into())
+                .unwrap(),
+        );
+    }
+
+    charset
+}
+
 pub const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");

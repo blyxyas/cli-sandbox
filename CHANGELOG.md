@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Bug Fixes
+
+- Separate regex and `with_stdout` and `with_stderr`
+
+### Testing
+
+- Add `fmt` tests + Format the document
+
+### Ci
+
+- Now it runs (I hope)
+
+### Misc
+
+- Fix changelog
+- Even more Clippy Lints! + Make them happy
+
 ## [0.1.0] - 2023-05-09
 
 ### Bug Fixes
