@@ -347,12 +347,12 @@ impl WithStdout for Output {
 
     #[inline]
     fn empty_stderr(&self) -> bool {
-        self.stdout.len() == 0
+        self.stdout.is_empty()
     }
 
     #[inline]
     fn empty_stdout(&self) -> bool {
-        self.stdout.len() == 0
+        self.stdout.is_empty()
     }
 }
 
