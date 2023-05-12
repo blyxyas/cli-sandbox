@@ -1,6 +1,5 @@
 use better_panic::{Settings, Verbosity};
 use blake2::{Blake2s256, Digest};
-use cargo_metadata::Package;
 use file_hashing::get_hash_folder;
 use git2::{self, Repository};
 use semver;
