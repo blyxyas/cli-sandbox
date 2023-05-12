@@ -1,3 +1,5 @@
+<!-- cargo-rdme start -->
+
 <span align="center">
 
 <h1><pre><code>cli-sandbox</code></pre></h1>
@@ -71,6 +73,8 @@ Check the [project's documentation](https://docs.rs/cli-sandbox) for more info.
 * All output is beautiful thanks to [`pretty-assertions`](https://docs.rs/pretty_assertions/latest/pretty_assertions/) and [`better_panic`](https://docs.rs/better_panic). (feature: `pretty`, also can be enabled individually)
 * Little fuzzing functionality (feature: `fuzz`)
 * Testing either the `debug` or `release` profile (features: `dev` or `release`)
+
+<!-- cargo-rdme end -->
 
 ## Contributing
 
