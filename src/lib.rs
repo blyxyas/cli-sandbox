@@ -238,6 +238,40 @@ pub trait WithStdout {
     /// }
     /// ```
     fn stderr_warns(&self) -> bool;
+    /// Checks that the stderr is empty. It's different from `.with_stderr("")` in that this won't print a whole diff. Useful for when ANY presence of a stderr would mean that there were errors, and the output is invalid.
+    ///
+    /// ## Example
+    ///
+    /// ```no_run
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>> {
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// if !cmd.empty_stderr() {
+    ///     panic!("HELP!!! THE OUTPUT IS INVALID!!");
+    /// }
+    /// # Ok(())
+    /// }
+    /// ```
+    fn empty_stderr(&self) -> bool;
+    /// Checks that the stdout is empty. It's different from `.with_stdout("")` in that this won't print a whole diff. Useful for when ANY presence of a stdout, would mean that there were errors, and the output is invalid.
+    ///
+    /// ## Example
+    ///
+    /// ```no_run
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>> {
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// if !cmd.empty_stdout() {
+    ///     panic!("HELP!!! THE OUTPUT IS INVALID!!");
+    /// }
+    /// # Ok(())
+    /// }
+    /// ```
+    fn empty_stdout(&self) -> bool;
 }
 
 impl WithStdout for Output {
@@ -311,6 +345,16 @@ impl WithStdout for Output {
             Err(_) => panic!("stderr isn't UTF-8 (bug)"),
         });
         buf.contains("warnings:")
+    }
+
+    #[inline]
+    fn empty_stderr(&self) -> bool {
+        self.stdout.len() == 0
+    }
+
+    #[inline]
+    fn empty_stdout(&self) -> bool {
+        self.stdout.len() == 0
     }
 }
 
