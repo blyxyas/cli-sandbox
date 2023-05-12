@@ -12,6 +12,12 @@ categories = [
 	"development-tools::testing",
 	"command-line-interface",
 ]
+include = [
+	"src",
+	"Cargo.toml",
+	"build.rs",
+	"README.md"
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
