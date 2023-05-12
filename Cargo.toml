@@ -23,4 +23,11 @@ fuzz = ["dep:fastrand"]
 fuzz_seed = ["dep:fastrand"]
 
 [dev-dependencies]
+better-panic = "0.3.0"
+blake2 = "0.10.6"
+cargo_metadata = "0.15.4"
+file-hashing = { version = "0.1.2", default-features = false }
 git-cliff = "1.2.0"
+git2 = "0.17.1"
+num_cpus = "1.15.0"
+semver = "1.0.17"
