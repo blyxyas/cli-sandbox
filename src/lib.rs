@@ -61,8 +61,6 @@ use anyhow::Result;
 use pretty_assertions::assert_eq;
 #[cfg(feature = "regex")]
 use regex::Regex;
-#[cfg(feature = "unstable")]
-use stability::unstable;
 use tempfile::{tempdir, TempDir};
 
 #[derive(Debug)]

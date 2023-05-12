@@ -7,7 +7,6 @@ use semver;
 use std::{env, fs, str};
 
 #[test]
-#[ignore]
 fn version() {
     Settings::new().verbosity(Verbosity::Minimal).install();
     let bless = match env::var("BLESS").unwrap_or(String::from("false")).as_str() {
