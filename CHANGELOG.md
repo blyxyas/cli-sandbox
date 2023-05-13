@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2023-05-13
+
+### Features
+
+- Re-export `better-panic` as feature, pack all pretty features into one.
+
+## [0.4.5] - 2023-05-13
+
+### Documentation
+
+- Add `--dev` flag to rustdoc example tests
+
+### Miscellaneous Tasks
+
+- Generate Changelog
+
 ## [0.4.4] - 2023-05-12
 
 ### Documentation

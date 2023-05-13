@@ -132,11 +132,41 @@ use std::{
 };
 
 use anyhow::Result;
+#[cfg(feature = "better_panic")]
+pub use better_panic;
 #[cfg(feature = "pretty_assertions")]
 use pretty_assertions::assert_eq;
 #[cfg(feature = "regex")]
 use regex::Regex;
 use tempfile::{tempdir, TempDir};
+#[cfg(feature = "better_panic")]
+pub mod panic {
+    use better_panic::{Settings, Verbosity};
+
+    /// Shortcut to `better_panic::Settings::new().verbosity(better_panic::Verbosity::Minimal).install()`;
+    ///
+    /// Meant to be used at the start of your tests.
+    #[inline]
+    pub fn minimal() {
+        Settings::new().verbosity(Verbosity::Minimal).install();
+    }
+
+    /// Shortcut to `better_panic::Settings::new().verbosity(better_panic::Verbosity::Medium).install()`;
+    ///
+    /// Meant to be used at the start of your tests.
+    #[inline]
+    pub fn medium() {
+        Settings::new().verbosity(Verbosity::Medium).install();
+    }
+
+    /// Shortcut to `better_panic::Settings::new().verbosity(better_panic::Verbosity::Full).install()`;
+    ///
+    /// Meant to be used at the start of your tests.
+    #[inline]
+    pub fn full() {
+        Settings::new().verbosity(Verbosity::Full).install();
+    }
+}
 
 #[derive(Debug)]
 pub struct Project {
