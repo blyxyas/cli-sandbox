@@ -1,6 +1,6 @@
 [package]
 name = "cli-sandbox"
-version = "0.4.5"
+version = "0.5.0"
 edition = "2021"
 license = "MIT"
 description = "Utilities to help test your CLI"
@@ -27,9 +27,10 @@ tempfile = "3.5.0"
 fastrand = { version = "1.9.0", optional = true }
 pretty_assertions = { version = "1.3.0", optional = true }
 regex = { version = "1.8.1", optional = true }
+better-panic = { version = "0.3.0", optional = true }
 
 [features]
-default = ["pretty_assertions", "dev", "regex", "fuzz"]
+default = ["dev", "regex", "fuzz", "pretty"]
 pretty_assertions = ["dep:pretty_assertions"]
 dev = []
 release = []
@@ -37,6 +38,8 @@ regex = ["dep:regex"]
 deny-warnings = []
 fuzz = ["dep:fastrand"]
 fuzz_seed = ["dep:fastrand"]
+better_panic = ["dep:better-panic"]
+pretty = ["pretty_assertions", "better_panic"]
 
 [dev-dependencies]
 better-panic = "0.3.0"
