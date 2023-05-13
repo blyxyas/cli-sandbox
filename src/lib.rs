@@ -19,6 +19,7 @@
 //!
 //! #[test]
 //! fn compiling() -> Result<(), Box<dyn Error>> {
+//!     cli_sandbox::init(); // Initialize the sandbox
 //!     let proj = project()?;                      // Create a project
 //!
 //!     // Let's create a file, and put in there some Python.

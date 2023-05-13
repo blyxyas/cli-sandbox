@@ -21,33 +21,34 @@ use std::error::Error;
 
 #[test]
 fn compiling() -> Result<(), Box<dyn Error>> {
-	let proj = project()?;                      // Create a project
+    cli_sandbox::init(); // Initialize the sandbox
+    let proj = project()?;                      // Create a project
 
-	// Let's create a file, and put in there some Python.
-	proj.new_file("my-program.py",
+    // Let's create a file, and put in there some Python.
+    proj.new_file("my-program.py",
 r#"def main():
-	print("Hi! this is a test")
+    print("Hi! this is a test")
 
 main()"#)?;
 
-	let cmd = proj.command(["build"])?;         // Execute the command "<YOUR COMMAND> build". Cli-sandbox will automatically get pickup your command.
+    let cmd = proj.command(["build"])?;         // Execute the command "<YOUR COMMAND> build". Cli-sandbox will automatically get pickup your command.
 
-	// Now, let's check that the transpiler created the file correctly.
-	proj.check_file("my-program.rs", 
+    // Now, let's check that the transpiler created the file correctly.
+    proj.check_file("my-program.rs",
 r#"fn main() {
-	println!("Hi! this is a test");
+    println!("Hi! this is a test");
 }
 
 main()"#)?;
 
-	// And that the command stdout and stderr are correct.
+    // And that the command stdout and stderr are correct.
 
-	cmd.with_stdout("File transpiled correctly! (`my-program.py` -> `my-program.rs`)");
+    cmd.with_stdout("File transpiled correctly! (`my-program.py` -> `my-program.rs`)");
 
-	// If the stderr isn't empty, we'll panic.
-	if !cmd.empty_stderr() {
-		panic!("Something went wrong! stderr isn't empty");
-	};
+    // If the stderr isn't empty, we'll panic.
+    if !cmd.empty_stderr() {
+        panic!("Something went wrong! stderr isn't empty");
+    };
 }
 ```
 
@@ -56,7 +57,7 @@ You can also get the path of a project (it changes each time the tests are execu
 ## Installation
 
 ```sh
-cargo add cli-sandbox
+cargo add cli-sandbox --dev
 ```
 
 ## Usage
