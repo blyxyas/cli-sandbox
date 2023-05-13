@@ -1,4 +1,3 @@
-use better_panic;
 use cli_sandbox::project;
 use pretty_assertions::assert_ne;
 

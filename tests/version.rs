@@ -2,7 +2,7 @@ use better_panic::{Settings, Verbosity};
 use blake2::{Blake2s256, Digest};
 use file_hashing::get_hash_folder;
 use git2::{self, Repository};
-use semver;
+
 use std::{env, fs, str};
 
 #[test]
