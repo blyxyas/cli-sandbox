@@ -179,6 +179,16 @@ pub fn project() -> Result<Project> {
     Project::new()
 }
 
+pub fn init() {
+    let md = cargo_metadata::MetadataCommand::new()
+        .exec()
+        .expect("Couldn't get Cargo Metadata");
+
+    let root = md.root_package().unwrap();
+    env::set_var("SANDBOX_TARGET_DIR", &md.target_directory);
+    env::set_var("SANDBOX_PKG_NAME", &root.name);
+}
+
 impl Project {
     /// Creates a new [`Project`]
     ///
@@ -227,9 +237,9 @@ impl Project {
     {
         #[cfg(feature = "dev")]
         return Ok(Command::new(
-            Path::new(&std::env::var("CARGO_TARGET_DIR")?)
+            Path::new(&std::env::var("SANDBOX_TARGET_DIR")?)
                 .join("debug")
-                .join(env!("CARGO_PKG_NAME")),
+                .join(&std::env::var("SANDBOX_PKG_NAME")?),
         )
         .current_dir(self.path())
         .args(args)
@@ -237,7 +247,8 @@ impl Project {
 
         #[cfg(feature = "release")]
         return Ok(Command::new(
-            Path::new(&std::env::var("CARGO_TARGET_DIR")?)
+            Path::new(&std::env::var("CARGO_MANIFEST_DIR")?)
+                .join("target")
                 .join("release")
                 .join(env!("CARGO_PKG_NAME")),
         )
