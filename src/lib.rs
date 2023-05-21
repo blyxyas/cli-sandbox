@@ -127,6 +127,7 @@ use std::{
     ffi::OsStr,
     fs::{write, File},
     io::Read,
+    os,
     path::Path,
     process::{Command, Output},
     str,
@@ -302,6 +303,34 @@ impl Project {
             }
             _ => {
                 false
+            }
+        }
+    }
+
+    /// Creates a [symbolic link](wikipedia.org/wiki/Symlinks), both paths are relative to the temporary project's path.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if the OS can't create a system between the two paths.
+    pub fn symlink<P: AsRef<Path>, Q: AsRef<Path>>(&self, src: P, dst: Q) {
+        let src = self.path().join(src.as_ref());
+        let dst = self.path().join(dst.as_ref());
+        #[cfg(unix)]
+        {
+            if let Err(e) = os::unix::fs::symlink(&src, &dst) {
+                panic!("failed to symlink {:?} to {:?}: {:?}", src, dst, e);
+            }
+        }
+        #[cfg(windows)]
+        {
+            if src.is_dir() {
+                if let Err(e) = os::windows::fs::symlink_dir(&src, &dst) {
+                    panic!("failed to symlink {:?} to {:?}: {:?}", src, dst, e);
+                }
+            } else {
+                if let Err(e) = os::windows::fs::symlink_file(&src, &dst) {
+                    panic!("failed to symlink {:?} to {:?}: {:?}", src, dst, e);
+                }
             }
         }
     }
