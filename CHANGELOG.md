@@ -2,11 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.5.0] - 2023-05-13
+## [0.7.0] - 2023-05-21
+
+### Features
+
+- Add `is_bin`
+
+## [0.6.1] - 2023-05-13
+
+### Documentation
+
+- Clarify `cli_sandbox::init()`
+
+## [0.6.0] - 2023-05-13
 
 ### Features
 
 - Re-export `better-panic` as feature, pack all pretty features into one.
+- Add `init` function
 
 ## [0.4.5] - 2023-05-13
 
