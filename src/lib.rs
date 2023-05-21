@@ -257,6 +257,48 @@ impl Project {
         .args(args)
         .output()?);
     }
+
+    /// Checks the [file signature](https://en.m.wikipedia.org/wiki/File_format#Magic_number) of a file and returns `true` if the file in that path is an executable.
+    ///
+    /// The checked file signatures are the following, if the file's signature is any of the following, the function will return `true`.
+    ///
+    /// * `4D 5A`
+    /// 	- DOS MZ executable and descendants | (.exe, .scr, .sys, .dll, .fon, .cpl, .iec, .ime, .rs, .tsp, .mz)
+    /// * `5A 4D`
+    /// 	- DOS ZM executable and descendants, rare | (.exe)
+    /// * `7F 45 4C 46`
+    /// 	- ELF files
+    /// * `64 65 78 0A 30 33 35 00`
+    /// 	- [Dalvik Executables](https://en.wikipedia.org/wiki/Dalvik_(software))
+    /// * `4A 6F 79 21`
+    /// 	- Preferred Executable Format
+    /// * `00 00 03 F3`
+    /// 	- Amiga Hunk executable file
+    pub fn is_bin<P: AsRef<Path>>(&self, path: P) -> bool {
+        let mut buf: [u8; 8] = [0; 8];
+        let mut f = File::open(self.path().join(&path)).expect("Couldn't open that path");
+        match f.read_exact(&mut buf) {
+            Ok(()) => {}
+            Err(_) => {
+                buf.fill(0x01) // Fill the rest of the buffer with 0x01, could have used 0x00 but Dalvik Executable
+                               // already ends with 0x00 and that would make false positives
+            }
+        };
+
+        match buf {
+			[0x4D, 0x5A, ..] | [0x5A, 0x4D, ..] | // DOS MZ (.exe, .scr, .sys, .dll, .fon, .cpl, .iec, .ime, .rs, .tsp, .mz)
+            [0x7F, 0x45, 0x4C, 0x46, ..] | // ELF
+			[0x64, 0x65, 0x78, 0x0A, 0x30, 0x33, 0x35, 0x00] | // Dalvik Executable (.dex)
+			[0x4A, 0x6F, 0x79, 0x21, ..] | // Preferred Executable Format
+			[0x00, 0x00, 0x03, 0xF3, ..] // Amiga Hunk Executable File
+			=> {
+				true
+			}
+            _ => {
+                false
+            }
+        }
+    }
 }
 
 pub trait WithStdout {
