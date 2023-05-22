@@ -31,7 +31,7 @@ r#"def main():
 
 main()"#)?;
 
-    let cmd = proj.command(["build"])?;         // Execute the command "<YOUR COMMAND> build". Cli-sandbox will automatically get pickup your command.
+    let cmd = proj.command(["build"])?;         // Execute the command "<YOUR COMMAND> build". Cli-sandbox will automatically get your command.
 
     // Now, let's check that the transpiler created the file correctly.
     proj.check_file("my-program.rs",

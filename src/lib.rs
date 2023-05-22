@@ -334,6 +334,32 @@ impl Project {
             }
         }
     }
+
+    /// Cleans your environment used in the working directory (i.e. removing all environment variables that start with a prefix).
+    ///
+    /// ---
+    ///
+    /// (Note that "localized" environment variables are taken into account)
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if it couldn't get the current working directory, or;
+    /// it can't set the current working directory to the temporary project's path, or;
+    /// it can't set the current working directory to the original working directory.
+    pub fn clean_env(&self, prefix: &str) {
+        let cwd = env::current_dir().expect("Couldn't get current working directory");
+        // Some environment variables contain some bash script for being defined in X directory (e.g. PROMPT_COMMAND='[[ $PWD == "/foo/bar/" ]] && export FOO=BAR || unset FOO').
+        // This will define FOO=BAR only if the current working directory is "/foo/bar".
+        // That's why we change the CWD
+        env::set_current_dir(self.path()).expect("Couldn't change path");
+        for (k, _) in env::vars() {
+            if k.starts_with(prefix) {
+                env::remove_var(k);
+            };
+        }
+
+        env::set_current_dir(cwd).expect("Couldn't return to the origin directory");
+    }
 }
 
 pub trait WithStdout {
