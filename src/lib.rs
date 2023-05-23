@@ -490,6 +490,36 @@ pub trait WithStdout {
     /// }
     /// ```
     fn empty_stdout(&self) -> bool;
+    /// Checks that the stdout is corresponding with a file (usually "<my-test>.stdout");
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>> {
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// cmd.with_stdout_file("cool-args-test.stdout");
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn with_stdout_file<P: AsRef<Path>>(&self, filename: P);
+    /// Checks that the stderr is corresponding with a file (usually "<my-test>.stderr");
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # use std::error::Error;
+    /// # use cli_sandbox::{project, WithStdout};
+    /// # fn main() -> Result<(), Box<dyn Error>> {
+    /// let proj = project()?;
+    /// let cmd = proj.command(["my", "cool", "--args"])?;
+    /// cmd.with_stderr_file("cool-args-test.stderr");
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn with_stderr_file<P: AsRef<Path>>(&self, filename: P);
 }
 
 impl WithStdout for Output {
@@ -573,6 +603,36 @@ impl WithStdout for Output {
     #[inline]
     fn empty_stdout(&self) -> bool {
         self.stdout.is_empty()
+    }
+
+    fn with_stdout_file<P: AsRef<Path>>(&self, filename: P) {
+        let expected = match std::fs::read_to_string(&filename) {
+            Ok(s) => s,
+            Err(e) => panic!("Couldn't read file {}: {e}", filename.as_ref().display()),
+        };
+
+        let mut buf = String::new();
+        buf.push_str(match str::from_utf8(&self.stdout) {
+            Ok(val) => val,
+            Err(_) => panic!("stdout isn't UTF-8 (bug)"),
+        });
+
+        assert_eq!(expected, buf);
+    }
+
+    fn with_stderr_file<P: AsRef<Path>>(&self, filename: P) {
+        let expected = match std::fs::read_to_string(&filename) {
+            Ok(s) => s,
+            Err(e) => panic!("Couldn't read file {}: {e}", filename.as_ref().display()),
+        };
+
+        let mut buf = String::new();
+        buf.push_str(match str::from_utf8(&self.stderr) {
+            Ok(val) => val,
+            Err(_) => panic!("stderr isn't UTF-8 (bug)"),
+        });
+
+        assert_eq!(expected, buf);
     }
 }
 
